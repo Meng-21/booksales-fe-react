@@ -12,6 +12,9 @@ import CreateGenre from "./pages/admin/genres/create";
 import AdminGenres from "./pages/admin/genres";
 import CreateAuthor from "./pages/admin/authors/create";
 import AdminAuthors from "./pages/admin/authors";
+import BookEdit from "./pages/admin/books/edit";
+import GenreEdit from "./pages/admin/genres/edit";
+import AuthorEdit from "./pages/admin/authors/edit";
 function App() {
   return (
     <>
@@ -35,19 +38,24 @@ function App() {
             <Route path="books">
               <Route index element={<AdminBooks />} />
               <Route path="create" element={<BookCreate />} />
+              <Route path="edit/:id" element={<BookEdit />}/>
             </Route>
 
             {/* genres */}
             <Route path="genres">
               <Route index element={<AdminGenres />} />
               <Route path="create" element={<CreateGenre />} />
+              <Route path="edit/:id" element={<GenreEdit/>}/>
             </Route>
 
             {/* authors */}
             <Route path="authors">
               <Route index element={<AdminAuthors />} />
               <Route path="create" element={<CreateAuthor />} />
+              <Route path="edit/:id" element= {<AuthorEdit/>}/>
             </Route>
+
+            
           </Route>
         </Routes>
       </BrowserRouter>

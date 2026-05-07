@@ -16,6 +16,7 @@ import BookEdit from "./pages/admin/books/edit";
 import GenreEdit from "./pages/admin/genres/edit";
 import AuthorEdit from "./pages/admin/authors/edit";
 import ShowBook from "./pages/public/books/show";
+import AdminRoute from "./routes/AdminRoute";
 function App() {
   return (
     <>
@@ -25,10 +26,9 @@ function App() {
           <Route element={<PublicLayout />}>
             <Route index element={<Home />} />
 
-
             <Route path="books">
               <Route index element={<Books />} />
-              <Route path="show/:id" element={<ShowBook/>} />
+              <Route path="show/:id" element={<ShowBook />} />
             </Route>
 
             {/* auth */}
@@ -37,31 +37,36 @@ function App() {
           </Route>
 
           {/* admin */}
-          <Route path="admin" element={<AdminLayout />}>
+          <Route
+            path="admin"
+            element={
+              <AdminRoute>
+                <AdminLayout />
+              </AdminRoute>
+            }
+          >
             <Route index element={<Dashboard />} />
 
             {/* books(admin) */}
             <Route path="books">
               <Route index element={<AdminBooks />} />
               <Route path="create" element={<BookCreate />} />
-              <Route path="edit/:id" element={<BookEdit />}/>
+              <Route path="edit/:id" element={<BookEdit />} />
             </Route>
 
             {/* genres */}
             <Route path="genres">
               <Route index element={<AdminGenres />} />
               <Route path="create" element={<CreateGenre />} />
-              <Route path="edit/:id" element={<GenreEdit/>}/>
+              <Route path="edit/:id" element={<GenreEdit />} />
             </Route>
 
             {/* authors */}
             <Route path="authors">
               <Route index element={<AdminAuthors />} />
               <Route path="create" element={<CreateAuthor />} />
-              <Route path="edit/:id" element= {<AuthorEdit/>}/>
+              <Route path="edit/:id" element={<AuthorEdit />} />
             </Route>
-
-            
           </Route>
         </Routes>
       </BrowserRouter>

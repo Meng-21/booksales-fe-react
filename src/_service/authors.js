@@ -7,14 +7,18 @@ export const getAuthors = async () => {
 
 
 export const createAuthor = async (data) => {
-  const ressponse = await API.post("/authors", data);
+  const ressponse = await API.post("/authors", data,{
+    headers:{
+      "Authorization" : `Bearer ${localStorage.getItem('accessToken')}`
+      }
+  });
   return ressponse.data;
 };
 
 
 export const showAuthor =async (id) => {
   try {
-    const {data} =await API.get(`/authors/${id}`)
+    const {data} =await API.get(`/authors/${id}`,{})
     return data.data;
     
   } catch (error) {
@@ -27,7 +31,12 @@ export const showAuthor =async (id) => {
 
 export const updateAuthor = async (id , data) => {
   try {
-    const response = await API.post(`/authors/${id}`, data)
+    const response = await API.post(`/authors/${id}`, data,{
+      headers:{
+      "Authorization" : `Bearer ${localStorage.getItem('accessToken')}`
+
+      }
+    })
     return response.data
     
   } catch (error) {

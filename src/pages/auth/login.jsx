@@ -16,7 +16,6 @@ export default function Login() {
   const token = localStorage.getItem("accessToken");
   const decodedData = useDecodeToken(token);
 
-
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -35,23 +34,23 @@ export default function Login() {
       const response = await login(formData);
 
       localStorage.setItem("accessToken", response.token);
-      localStorage.setItem("userInfo", JSON.stringify(response.user))
-      
-      return navigate(response.user.role === "admin" ? "/admin" : "/")
+      localStorage.setItem("userInfo", JSON.stringify(response.user));
+
+      return navigate(response.user.role === "admin" ? "/admin" : "/");
     } catch (error) {
-      setError(error?.response?.data?.message)
+      setError(error?.response?.data?.message);
     } finally {
       setLoading(false);
     }
-  }
-
-  
+  };
 
   useEffect(() => {
-    if (token && decodedData && decodedData.success){
-      navigate( "/admin")
+    if (token && decodedData?.success) {
+      const user = JSON.parse(localStorage.getItem("userInfo"));
+
+      navigate(user?.role === "admin" ? "/admin" : "/");
     }
-  },[token, decodedData,navigate] )
+  }, [token, decodedData, navigate]);
 
   return (
     <>

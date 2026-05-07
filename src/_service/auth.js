@@ -26,10 +26,6 @@ export const register = async (payload) => {
 
 
 
-
-
-
-
 export const logout = async ({token}) => {
   try {
     const {data} = await API.post ('/logout', {token },{

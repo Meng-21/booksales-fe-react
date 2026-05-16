@@ -22,24 +22,102 @@ export default function ShowBook() {
     fetchData();
   }, [id]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  //keranjang
 
-    if (!accsessToken){
+  const addToCart = () => {
+    if (!accsessToken) {
       navigate("/login");
       return;
     }
+
+    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    const index = cart.findIndex((item) => item.id === book.id);
+
+    if (index !== -1) {
+      cart[index] = {
+        ...cart[index],
+        quantity: cart[index].quantity + quantity,
+      };
+    } else {
+      cart.push({
+        id: book.id,
+        title: book.title,
+        price: book.price,
+        cover_photo: book.cover_photo,
+        quantity,
+      });
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Berhasil ditambahkan ke cart");
+    navigate("/cart");
+  };
+
+  //transaksi
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!accsessToken) {
+      navigate("/login");
+      return;
+    }
+
     try {
       const payload = {
-        book_id: id,
-        quantity: quantity,
+        book_id: Number(id),
+        quantity: Number(quantity),
       };
 
-      await createTransactions(payload);
-      alert("pembelian berhasil");
+      // simpan transaksi ke database
+      const response = await createTransactions(payload);
+
+      const transaction = response.data;
+
+      const phone = "6285764457002";
+
+      const orderId = transaction.order_number;
+
+      const totalPrice = book.price * quantity;
+
+      const itemsText = `
+          1. ${book.title}
+          Qty: ${quantity}
+          Harga: Rp${totalPrice}
+          `;
+
+      const message = `
+          *BOOK ORDER CONFIRMATION*
+
+          ━━━━━━━━━━━━━━━━━━
+          *Order ID:* ${orderId}
+          *Tanggal:* ${new Date().toLocaleString()}
+          ━━━━━━━━━━━━━━━━━━
+
+          *Detail Pesanan:*
+
+          ${itemsText}
+
+          ━━━━━━━━━━━━━━━━━━
+          *TOTAL PEMBAYARAN: Rp${totalPrice}*
+
+          *Catatan:*
+          - Mohon cek kembali pesanan Anda
+          - Pembayaran akan dikonfirmasi oleh admin
+
+          ━━━━━━━━━━━━━━━━━━
+          Terima kasih telah berbelanja di *Bookstore Kami*
+          Kami akan segera memproses pesanan Anda!
+          `;
+
+      const url = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+
+      window.open(url, "_blank");
+
+      alert("Pembelian berhasil");
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.log(error.response?.data);
+      alert("Pembelian gagal");
     }
   };
   return (
@@ -135,10 +213,7 @@ export default function ShowBook() {
               </div>
 
               <div className="mt-6 sm:gap-4 sm:items-center sm:flex sm:mt-8">
-                <form
-                  onSubmit={handleSubmit}
-                  className="mt-6 sm:mt-8 space-y-4 "
-                >
+                <div className="mt-6 sm:mt-8 space-y-4 ">
                   <div>
                     <label
                       htmlFor="quantity"
@@ -152,17 +227,24 @@ export default function ShowBook() {
                       name="quantity"
                       value={quantity}
                       min={1}
-                      onChange={(e) => setQuantity(e.target.value)}
+                      onChange={(e) => setQuantity(Number(e.target.value))}
                       className="mt-1 block w-32 px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-white dark:bg-gray-800 dark:border-gray-600 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                     />
                   </div>
                   <button
-                    type="submit"
+                    onClick={handleSubmit}
                     className="text-white mt-4 sm:mt-0 bg-indigo-700 hover:bg-indigo-800 focus:ring-4 focus:ring-indigo-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-indigo-600 dark:hover:bg-indigo-700 focus:outline-none dark:focus:ring-indigo-800 flex items-center justify-center"
                   >
-                    Beli
+                    Beli Sekarang
                   </button>
-                </form>
+
+                  <button
+                    onClick={addToCart}
+                    className="rounded-lg bg-indigo-600 px-5 py-3 text-white hover:bg-indigo-700"
+                  >
+                    Add To Cart
+                  </button>
+                </div>
               </div>
 
               <hr className="my-6 md:my-8 border-gray-200 dark:border-gray-800" />

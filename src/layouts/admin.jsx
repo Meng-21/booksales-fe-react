@@ -12,23 +12,32 @@ export default function AdminLayout() {
   //validasi login
 
   useEffect(() => {
-    if (!token || !decodedData || !decodedData.success) {
+    if (!token) {
       navigate("/login");
+      return;
     }
 
-    const role = userInfo.role;
-    if (role !== "admin" || !role) {
+    if (decodedData === null) return;
+
+    if (!decodedData?.success) {
+      localStorage.clear();
+      navigate("/login");
+      return;
+    }
+
+    if (userInfo?.role !== "admin") {
       navigate("/");
     }
-  }, [token, decodedData, navigate])
+  }, [token, decodedData, navigate, userInfo]);
 
   const handleLogout = async () => {
-    if (token){
-      await logout((token));
+    if (token) {
+      await logout(token);
+      localStorage.removeItem("accessToken");
       localStorage.removeItem("userInfo");
     }
     navigate("/login");
-  }
+  };
 
   return (
     <>
@@ -80,7 +89,7 @@ export default function AdminLayout() {
                   alt="Flowbite Logo"
                 />
                 <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                  Flowbite
+                  Selamat Datang Admin
                 </span>
               </Link>
             </div>
@@ -322,7 +331,8 @@ export default function AdminLayout() {
               <li>
                 <button
                   onClick={handleLogout}
-                  className="flex items-center justify-center w-full p-2 text-base font-medium text-gray-900 rounded-lg bg-red-500/20 hover:bg-red-500/30 transition duration-75 dark:text-white dark:bg-red-500/20 dark:hover:bg-red-500/40">
+                  className="flex items-center justify-center w-full p-2 text-base font-medium text-gray-900 rounded-lg bg-red-500/20 hover:bg-red-500/30 transition duration-75 dark:text-white dark:bg-red-500/20 dark:hover:bg-red-500/40"
+                >
                   <span className="mr-3">Log out</span>
                 </button>
               </li>

@@ -48,11 +48,15 @@ export const updateAuthor = async (id , data) => {
   export const deleteAuthor = async (id) => {
     
     try {
-      await API.delete(`/authors/${id}`)
+      const token = localStorage.getItem("accessToken");
+      const {data}= await API.delete(`/authors/${id}`,{
+        headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      });
+      return data;
     } catch (error) {
       console.log(error);
       throw error
-      
-      
     }
   }

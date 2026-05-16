@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { getBooks } from "../../../_service/books";
 import { Link } from "react-router-dom";
-import { bookImageStorage} from "../../../_api";
+import { bookImageStorage } from "../../../_api";
 
 export default function Books() {
   const [books, setBooks] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -16,14 +17,49 @@ export default function Books() {
     fetchData();
   }, []);
 
+  const filteredBooks = books.filter((book) =>
+    book.title.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <>
       <section className="bg-gray-50 py-8 antialiased dark:bg-gray-900 md:py-12">
         <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
+          <div className="mb-8 flex justify-center">
+            <div className="relative w-full max-w-2xl">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4">
+                <svg
+                  className="h-5 w-5 text-gray-400"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </div>
+
+              <input
+                type="text"
+                placeholder="Search your favorite books..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-full rounded-2xl border border-gray-700 bg-gray-800 py-4 pl-12 pr-4 text-white shadow-lg transition-all duration-300 placeholder:text-gray-400 focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/30"
+              />
+            </div>
+          </div>
           <div className="mb-4 grid gap-4 sm:grid-cols-2 md:mb-8 lg:grid-cols-3 xl:grid-cols-4">
             {books.length > 0 ? (
-              books.map((book) => (
-                <div key={book.id} className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+              filteredBooks.map((book) => (
+                <div
+                  key={book.id}
+                  className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800"
+                >
                   <div className="h-56 w-full">
                     <Link to={`/books/show/${book.id}`}>
                       <img
@@ -86,7 +122,7 @@ export default function Books() {
 
                     <div className="mt-4 flex items-center justify-between gap-4">
                       <p className="text-2xl font-extrabold leading-tight text-gray-900 dark:text-white">
-                       Rp{book.price}
+                        Rp{book.price}
                       </p>
 
                       <Link

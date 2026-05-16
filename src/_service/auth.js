@@ -26,21 +26,12 @@ export const register = async (payload) => {
 
 
 
-export const logout = async ({token}) => {
-  try {
-    const {data} = await API.post ('/logout', {token },{
-      headers:{
-        Authorization:`Bearer ${localStorage.getItem('accessToken')}`
-      }
-    })
-    localStorage.removeItem('accessToken')
-    return data
-  } catch (error) {
-    console.log(error);
-    throw error
-    
-  }
-}
+export const logout = async () => {
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("userInfo");
+
+  return true;
+};
 
 
 

@@ -5,7 +5,6 @@ import Books from "./pages/public/books";
 import Login from "./pages/auth/login";
 import Register from "./pages/auth/register";
 import AdminLayout from "./layouts/admin";
-import Dashboard from "./pages/admin";
 import BookCreate from "./pages/admin/books/create";
 import AdminBooks from "./pages/admin/books";
 import CreateGenre from "./pages/admin/genres/create";
@@ -17,6 +16,11 @@ import GenreEdit from "./pages/admin/genres/edit";
 import AuthorEdit from "./pages/admin/authors/edit";
 import ShowBook from "./pages/public/books/show";
 import AdminRoute from "./routes/AdminRoute";
+import AdminUsers from "./pages/admin/users";
+import AdminTransactions from "./pages/admin/transactions";
+import Cart from "./pages/public/cart";
+import AdminDashboard from "./pages/admin";
+import HistoryPage from "./pages/history";
 function App() {
   return (
     <>
@@ -25,27 +29,35 @@ function App() {
           {/* public */}
           <Route element={<PublicLayout />}>
             <Route index element={<Home />} />
+            <Route path="/history" element={<HistoryPage />} />
 
             <Route path="books">
               <Route index element={<Books />} />
               <Route path="show/:id" element={<ShowBook />} />
             </Route>
 
+            {/* cart */}
+             <Route path="cart" element={<Cart />} />
+
             {/* auth */}
             <Route path="login" element={<Login />} />
             <Route path="register" element={<Register />} />
           </Route>
 
-          {/* admin */}
-          <Route
-            path="admin"
-            element={
-              <AdminRoute>
-                <AdminLayout />
-              </AdminRoute>
-            }
-          >
-            <Route index element={<Dashboard />} />
+            {/* admin */}
+            <Route path="admin"
+              element={
+                <AdminRoute>
+                  <AdminLayout />
+                </AdminRoute>
+              }
+            >
+            <Route index element={<AdminDashboard />} />
+
+            {/* users (admin) */}
+            <Route path="users">
+              <Route index element={<AdminUsers />} />
+            </Route>
 
             {/* books(admin) */}
             <Route path="books">
@@ -67,6 +79,11 @@ function App() {
               <Route path="create" element={<CreateAuthor />} />
               <Route path="edit/:id" element={<AuthorEdit />} />
             </Route>
+
+            <Route path="transactions">
+              <Route index element={<AdminTransactions />} />
+            </Route>
+
           </Route>
         </Routes>
       </BrowserRouter>

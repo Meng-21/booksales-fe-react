@@ -48,6 +48,7 @@ export const updateBook = async (id , data) => {
   }
 }
 
+
   export const deleteBook = async (id) => {
     
     try {
@@ -63,3 +64,13 @@ export const updateBook = async (id , data) => {
       
     }
   }
+
+export const getBestSeller = async () => {
+  try {
+    const { data } = await API.get("/books/best-seller");
+    return data.data;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
